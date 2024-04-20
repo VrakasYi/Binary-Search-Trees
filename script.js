@@ -321,7 +321,8 @@ function Tree(array) {
     };
     return result;
   };
-    //Recusive method
+
+  //Recusive method
   // function postOrder(arr = [], node) {
   //   if (node === null) return;    
   //   if (node.left) this.inorder(arr, node.left);    
@@ -331,50 +332,6 @@ function Tree(array) {
   //   return arr;
   // };
 
-  // function height(node) {
-  //   // Find the node in the 
-  //   // console.log('A');
-  //   // console.log(node);
-  //   if (node === undefined || node === null) {
-  //     // console.log(node);
-  //     return 0;
-  //   };
-
-  //   if (typeof node === 'object') {
-  //     node = node.data;
-  //   };
-  //   let foundNode = find(node); //CHECK IF NODE === OBJECT
-  //   // console.log('B');
-  //   console.log(foundNode);
-  //   if (!foundNode) return 0;
-  //   let queue = [];
-  //   // Initialize maxHeight to store the maximum height encountered
-  //   let maxHeight = queue.length;
-  //   let aboveNode;
-
-  //   // Perform level order traversal starting from the found node
-  //   while (foundNode !== null || queue.length > 0) {
-  //     if (queue.length === 0) {
-  //       maxHeight ++;
-  //     }
-  //     while (foundNode !== null) {
-  //       queue.push(foundNode);
-  //       console.log(queue);
-  //       // Update maxHeight if the current queue length is greater
-  //       // than the previously recorded maxHeight
-  //       if (queue.length > maxHeight) maxHeight = queue.length;        
-  //       foundNode = foundNode.left;
-  //     };
-  //     aboveNode = queue[queue.length - 1];
-  //     queue.pop();
-  //     foundNode = aboveNode.right;
-  //   };
-    
-  //   // Return the maximum height encountered minus 1
-  //   // (as height is counted in terms of edges)
-  //   return maxHeight - 1;
-  // };
-  // Recursive approach
   function height(node) {
     let maxHeight = 0;  
     function heightR(node) {
@@ -388,7 +345,7 @@ function Tree(array) {
     };
     const foundNode = find(node);
     heightR(foundNode);
-    return maxHeight;
+    return maxHeight -1;
   };
   
   function depth(value) {
@@ -439,19 +396,22 @@ function Tree(array) {
     inOrder(root => {
 
       let node = find(root);
-      console.log(node.data);
-      // console.log('this is node.left');
-      // console.log(node.left);
-      // console.log('this is node.left');
-      console.log(node.left);
-      const lHeight = height(node.left);
-      console.log(lHeight);
-      console.log(node.right);
-      const rHeight = height(node.right);
-      console.log(lHeight);
-      // diff = lHeight - rHeight
-      // console.log(diff);
-      // console.log(Math.abs(lHeight - rHeight));
+      let lHeight;
+      let rHeight;
+      if (node.left !== null) {
+        // console.log(node.left);
+        lHeight = height(node.left.data);
+      } else {
+        lHeight = 0;
+      };
+
+      if (node.right !== null) {
+        // console.log(node.right);
+        rHeight = height(node.right.data);
+      } else {
+        rHeight = 0;
+      };
+
       if (Math.abs(lHeight - rHeight) > 1) {
         isBalanced = false; // Set isBalanced to false if the tree is unbalanced
       };
@@ -462,8 +422,10 @@ function Tree(array) {
   function rebalance() {
     // Sort the array in ascending order
     let arr = inOrder()
+    console.log(arr);
     // Remove duplicates by converting to a Set and then back to an array
-    root = buildTree(arr);
+    Tree.root = buildTree(arr);
+    console.log(Tree.root);
   };
 
   return {
@@ -487,7 +449,7 @@ function Tree(array) {
 
 const tree = new Tree([1, 7, 4, 23, 8, 9, 4, 3, 5, 7, 9, 67]);
 // console.log(tree.root);
-// console.log(tree.isBalanced());
+console.log(tree.isBalanced());
 tree.prettyPrint(tree.root);
 // console.log(tree.levelOrder());
 // console.log(tree.inOrder());
@@ -495,15 +457,16 @@ tree.prettyPrint(tree.root);
 // console.log(tree.root.left.data);
 // console.log(tree.postOrder());
 // console.log(tree.depth(8));
-console.log(tree.height(23))
+// console.log(tree.height(23))
 
 tree.insert(80);
 tree.insert(81);
 tree.insert(82);
-// console.log(tree.isBalanced());
-console.log(tree.height(23))
+console.log(tree.isBalanced());
+// console.log(tree.height(23))
 tree.prettyPrint(tree.root);
-
+tree.rebalance();
+tree.prettyPrint(tree.root);
 // tree.deleteItem(8)
 
 // tree.prettyPrint(tree.root);
