@@ -94,7 +94,7 @@ function Tree(array) {
 
   function deleteItem(value) {
     let node = root
-    // root = deleteItemR(root, value)
+
     if (root === null) {
       return 'Nothing to delete';
     }
@@ -146,7 +146,10 @@ function Tree(array) {
     
   function find(value) {
     let node = root;
+
+    // Continue until the value is found or until reaching a leaf node
     while (value !== node.data) {
+      // If the value is greater than the current node's data, move to the right subtree
       if (value > node.data) {
         if (node.right === null) return 'This node does not exist';
         node = node.right;
@@ -216,7 +219,7 @@ function Tree(array) {
           node = node.left
         };
           // Pop the top node from the stack
-          node = stack.pop();
+          node = queue.pop();
           // Process the popped node
           result.push(node.data);
           // Move to the right subtree
@@ -328,92 +331,140 @@ function Tree(array) {
   //   return arr;
   // };
 
-  function height(node) {
-    // Find the node in the tree
-    let foundNode = find(node);    
-    if (!foundNode) return 0;    
-    let queue = [];
-    // Initialize maxHeight to store the maximum height encountered
-    let maxHeight = queue.length;
-    let aboveNode;
-
-    // Perform level order traversal starting from the found node
-    while (foundNode !== null || queue.length > 0) {
-      while (foundNode !== null) {
-        queue.push(foundNode);
-        // Update maxHeight if the current queue length is greater
-        // than the previously recorded maxHeight
-        if (queue.length > maxHeight) maxHeight = queue.length;        
-        foundNode = foundNode.left;
-      };
-      aboveNode = queue[queue.length - 1];
-      queue.pop();
-      foundNode = aboveNode.right;
-    };
-    
-    // Return the maximum height encountered minus 1
-    // (as height is counted in terms of edges)
-    return maxHeight - 1;
-  };
-  // Recursive approach
   // function height(node) {
-  //   let maxHeight = 0;  
-  //   function heightR(node) {
-  //     if (!node) return 0; // Base case: height of an empty tree is 0
-  //     let leftHeight = heightR(node.left);
-  //     let rightHeight = heightR(node.right);
-  //     // Update maxHeight if necessary
-  //     maxHeight = Math.max(leftHeight, rightHeight) + 1;
-  //     // Return the height of the current node
-  //     return maxHeight;
+  //   // Find the node in the 
+  //   // console.log('A');
+  //   // console.log(node);
+  //   if (node === undefined || node === null) {
+  //     // console.log(node);
+  //     return 0;
   //   };
-  //   const foundNode = find(node);
-  //   heightR(foundNode);
-  //   return maxHeight;
+
+  //   if (typeof node === 'object') {
+  //     node = node.data;
+  //   };
+  //   let foundNode = find(node); //CHECK IF NODE === OBJECT
+  //   // console.log('B');
+  //   console.log(foundNode);
+  //   if (!foundNode) return 0;
+  //   let queue = [];
+  //   // Initialize maxHeight to store the maximum height encountered
+  //   let maxHeight = queue.length;
+  //   let aboveNode;
+
+  //   // Perform level order traversal starting from the found node
+  //   while (foundNode !== null || queue.length > 0) {
+  //     if (queue.length === 0) {
+  //       maxHeight ++;
+  //     }
+  //     while (foundNode !== null) {
+  //       queue.push(foundNode);
+  //       console.log(queue);
+  //       // Update maxHeight if the current queue length is greater
+  //       // than the previously recorded maxHeight
+  //       if (queue.length > maxHeight) maxHeight = queue.length;        
+  //       foundNode = foundNode.left;
+  //     };
+  //     aboveNode = queue[queue.length - 1];
+  //     queue.pop();
+  //     foundNode = aboveNode.right;
+  //   };
+    
+  //   // Return the maximum height encountered minus 1
+  //   // (as height is counted in terms of edges)
+  //   return maxHeight - 1;
   // };
-
-  function depth(value) {
-    // let maxHeight = 0
-
-    function depthR(value, node, depth) {
-      if (node === null) return 0;
-      // console.log(node.data);
-      if (node.data === value) return depth;
-
-      const leftDepth = depthR(value, node.left, depth += 1);
-      if (leftDepth !== 0) return leftDepth; // Return if found in left subtree
-      
-      const rightDepth = depthR(value, node.right, depth += 1);
-      return rightDepth; // Return result from right subtree
-    };
-    return depthR(value, root, 0);
-  };
-
-  function isBalanced() {
-    function balanceR(node) {
-      let maxHeight;
-      let minHeight;
-
+  // Recursive approach
+  function height(node) {
+    let maxHeight = 0;  
+    function heightR(node) {
       if (!node) return 0; // Base case: height of an empty tree is 0
-
-      // Recursive calls to calculate the height of left and right subtrees
-      let leftHeight = balanceR(node.left);
-      let rightHeight = balanceR(node.right);
-      
-  
+      let leftHeight = heightR(node.left);
+      let rightHeight = heightR(node.right);
       // Update maxHeight if necessary
       maxHeight = Math.max(leftHeight, rightHeight) + 1;
-      minHeight = Math.min(leftHeight, rightHeight) + 1;
-
-      if((maxHeight - minHeight) > 1) return 'Unbalanced'
-      return 'Balanced'
+      // Return the height of the current node
+      return maxHeight;
     };
-    return balanceR(root);
+    const foundNode = find(node);
+    heightR(foundNode);
+    return maxHeight;
+  };
+  
+  function depth(value) {
+    // Start traversal from the root node
+    let node = root;
+    // Initialize the level to track the depth of the node
+    let level = 0;
+  
+    // Continue until the value is found or until reaching a leaf node
+    while (value !== node.data) {
+      // If the value is greater than the current node's data, move to the right subtree
+      if (value > node.data) {
+        // If the right child is null, the node does not exist in the tree
+        if (node.right === null) return 'This node does not exist';
+        // Move to the right child and increment the level
+        node = node.right;
+        level++;
+      }
+      // If the value is less than the current node's data, move to the left subtree
+      else if (value < node.data) {
+        // If the left child is null, the node does not exist in the tree
+        if (node.left === null) return 'This node does not exist';
+        // Move to the left child and increment the level
+        node = node.left;
+        level++;
+      }
+    }
+  
+    // Return the level, which represents the depth of the node
+    return level;
   }
+  // Recursive approach
+  // function depth(value) {
+  //   // let maxHeight = 0
+  //   function depthR(value, node, depth) {
+  //     if (node === null) return 0;
+  //     // console.log(node.data);
+  //     if (node.data === value) return depth;
+  //     const leftDepth = depthR(value, node.left, depth += 1);
+  //     if (leftDepth !== 0) return leftDepth; // Return if found in left subtree      
+  //     const rightDepth = depthR(value, node.right, depth += 1);
+  //     return rightDepth; // Return result from right subtree
+  //   };
+  //   return depthR(value, root, 0);
+  // };
+  function isBalanced() {
+    let isBalanced = true;
+    inOrder(root => {
+
+      let node = find(root);
+      console.log(node.data);
+      // console.log('this is node.left');
+      // console.log(node.left);
+      // console.log('this is node.left');
+      console.log(node.left);
+      const lHeight = height(node.left);
+      console.log(lHeight);
+      console.log(node.right);
+      const rHeight = height(node.right);
+      console.log(lHeight);
+      // diff = lHeight - rHeight
+      // console.log(diff);
+      // console.log(Math.abs(lHeight - rHeight));
+      if (Math.abs(lHeight - rHeight) > 1) {
+        isBalanced = false; // Set isBalanced to false if the tree is unbalanced
+      };
+    });
+    return isBalanced;
+  };
 
   function rebalance() {
-
-  }
+    // Sort the array in ascending order
+    let arr = inOrder()
+    // Remove duplicates by converting to a Set and then back to an array
+    root = buildTree(arr);
+  };
 
   return {
     root,
@@ -434,23 +485,29 @@ function Tree(array) {
 };
 
 
-const tree = new Tree([1, 7, 4, 23, 8, 9, 4, 3, 5, 7, 9, 67, 6345, 324]);
-console.log(tree.root);
+const tree = new Tree([1, 7, 4, 23, 8, 9, 4, 3, 5, 7, 9, 67]);
+// console.log(tree.root);
+// console.log(tree.isBalanced());
 tree.prettyPrint(tree.root);
 // console.log(tree.levelOrder());
 // console.log(tree.inOrder());
 // console.log(tree.preOrder());
 // console.log(tree.root.left.data);
 // console.log(tree.postOrder());
-// console.log(tree.depth(4));
-// console.log(tree.height(67))
-// tree.insert(80);
+// console.log(tree.depth(8));
+console.log(tree.height(23))
+
+tree.insert(80);
+tree.insert(81);
+tree.insert(82);
 // console.log(tree.isBalanced());
-// tree.prettyPrint(tree.root);
+console.log(tree.height(23))
+tree.prettyPrint(tree.root);
+
 // tree.deleteItem(8)
 
 // tree.prettyPrint(tree.root);
-// console.log(tree.find(7))
+// console.log(tree.find(1))
 // console.log(tree.root);
 
 // tree.deleteItem(4);
@@ -458,3 +515,47 @@ tree.prettyPrint(tree.root);
 // console.log(tree.root);
 // // console.log(tree.arr);
 // console.log(tree.find(23));
+
+// Define the Node and Tree classes as provided previously
+
+// Function to generate an array of random numbers less than 100
+// function generateRandomNumbers(count) {
+//   const randomNumbers = [];
+//   for (let i = 0; i < count; i++) {
+//     randomNumbers.push(Math.floor(Math.random() * 100));
+//   }
+//   return randomNumbers;
+// }
+
+// // Create a binary search tree from an array of random numbers
+// const randomNumbers = generateRandomNumbers(15); // Generate 15 random numbers
+// const tree = new Tree(randomNumbers);
+
+// // Confirm that the tree is balanced
+// console.log("Is the tree balanced?", tree.isBalanced());
+
+// // Print out all elements in level, pre, post, and in order
+// console.log("Level Order Traversal:", tree.levelOrder().join(", "));
+// console.log("Pre Order Traversal:", tree.preOrder().join(", "));
+// console.log("Post Order Traversal:", tree.postOrder().join(", "));
+// console.log("In Order Traversal:", tree.inOrder().join(", "));
+
+// // Add several numbers greater than 100 to unbalance the tree
+// tree.insert(105);
+// tree.insert(110);
+// tree.insert(115);
+
+// // Confirm that the tree is unbalanced
+// console.log("Is the tree balanced after inserting larger numbers?", tree.isBalanced());
+
+// // Balance the tree
+// tree.rebalance();
+
+// // Confirm that the tree is balanced after rebalancing
+// console.log("Is the tree balanced after rebalancing?", tree.isBalanced());
+
+// // Print out all elements in level, pre, post, and in order after rebalancing
+// console.log("Level Order Traversal (after rebalancing):", tree.levelOrder().join(", "));
+// console.log("Pre Order Traversal (after rebalancing):", tree.preOrder().join(", "));
+// console.log("Post Order Traversal (after rebalancing):", tree.postOrder().join(", "));
+// console.log("In Order Traversal (after rebalancing):", tree.inOrder().join(", "));
