@@ -424,11 +424,11 @@ function Tree(array) {
     let arr = inOrder()
     console.log(arr);
     // Remove duplicates by converting to a Set and then back to an array
-    this.root = buildTree(arr);
+    root = buildTree(arr);
   };
 
   return {
-    root,
+    get root() { return root; },
     insert,
     deleteItem,
     buildTree,
